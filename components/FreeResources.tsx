@@ -36,7 +36,7 @@ const ITEMS = [
 
 export default function FreeResources() {
   return (
-    <section id="free" className="relative bg-paper-200/60 py-20">
+    <section id="free" className="relative bg-paper-200/60 py-10">
       <div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent" />
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <SectionTitle

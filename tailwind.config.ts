@@ -7,6 +7,17 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      borderRadius: {
+        // Force all rounded utilities (except full) to 8px globally
+        none: "0",
+        sm: "8px",
+        DEFAULT: "8px",
+        md: "8px",
+        lg: "8px",
+        xl: "8px",
+        "2xl": "8px",
+        "3xl": "8px",
+      },
       colors: {
         // Deep purple background palette (from color demo)
         ink: {

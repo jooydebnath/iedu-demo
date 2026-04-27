@@ -1,6 +1,7 @@
 "use client";
 
-import { Play, Star, Users, Award, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Play, Star, Users, Award, ChevronRight, X, Clock } from "lucide-react";
 import { toBn } from "@/lib/utils";
 import SectionTitle from "./SectionTitle";
 
@@ -49,79 +50,220 @@ const TEACHERS: Teacher[] = [
     initials: "রা",
     badge: "বেস্টসেলার",
   },
+  {
+    id: "t4",
+    name: "ড. তাহমিনা ইসলাম",
+    designation: "সহকারী অধ্যাপক",
+    subject: "রসায়ন",
+    students: 16800,
+    rating: 4.9,
+    imgGrad: "from-amber-500 via-orange-600 to-red-700",
+    initials: "তা",
+  },
+  {
+    id: "t5",
+    name: "ফারহান কবির",
+    designation: "DU Lecturer",
+    subject: "ইংরেজি",
+    students: 12500,
+    rating: 4.8,
+    imgGrad: "from-fuchsia-500 via-purple-600 to-violet-700",
+    initials: "ফা",
+  },
+  {
+    id: "t6",
+    name: "সাদিয়া হক",
+    designation: "সিনিয়র সহকারী",
+    subject: "বাংলা",
+    students: 9800,
+    rating: 4.7,
+    imgGrad: "from-yellow-500 via-amber-600 to-orange-700",
+    initials: "সা",
+    badge: "নিউ টিচার",
+  },
 ];
 
-const VIDEOS = [
+type TeacherVideo = {
+  id: string;
+  title: string;
+  sub: string;
+  thumb: string;
+  presenter: string;
+  duration: string;
+  youtubeId: string;
+};
+
+const VIDEOS: TeacherVideo[] = [
   {
+    id: "tv1",
     title: "কেন বেছে নিবে i Education?",
     sub: "৫ মিনিটে জানুন",
     thumb: "from-purple-600 via-fuchsia-600 to-pink-600",
     presenter: "ফাউন্ডার মেসেজ",
     duration: "৫:২৩",
+    youtubeId: "dQw4w9WgXcQ",
   },
   {
+    id: "tv2",
     title: "Roadmap to Success ২০২৬",
     sub: "Admission প্রস্তুতির গাইড",
     thumb: "from-amber-500 via-orange-600 to-red-700",
     presenter: "টপারের পরামর্শ",
-    duration: "১২:৪৫",
+    duration: "১২:৬৫",
+    youtubeId: "dQw4w9WgXcQ",
+  },
+  {
+    id: "tv3",
+    title: "শিক্ষকদের পরিচিতি",
+    sub: "দেশের সেরা শিক্ষকমণ্ডলী",
+    thumb: "from-emerald-500 via-teal-600 to-cyan-700",
+    presenter: "টিচার্স টিম",
+    duration: "৭:১৮",
+    youtubeId: "dQw4w9WgXcQ",
+  },
+  {
+    id: "tv4",
+    title: "পদার্থবিজ্ঞান ডেমো ক্লাস",
+    sub: "ড. শাহরিয়ার রহমান",
+    thumb: "from-blue-500 via-indigo-600 to-violet-700",
+    presenter: "লাইভ ডেমো",
+    duration: "১০:৪২",
+    youtubeId: "dQw4w9WgXcQ",
+  },
+  {
+    id: "tv5",
+    title: "জীববিজ্ঞান মেডিকেল প্রস্তুতি",
+    sub: "নুসরাত জাহান",
+    thumb: "from-rose-500 via-pink-600 to-fuchsia-700",
+    presenter: "সিনিয়র লেকচারার",
+    duration: "৮:৫৫",
+    youtubeId: "dQw4w9WgXcQ",
+  },
+  {
+    id: "tv6",
+    title: "গণিত এডমিশন টিপ্স",
+    sub: "প্রকৌশলী রাশেদ আলী",
+    thumb: "from-yellow-500 via-orange-600 to-red-700",
+    presenter: "BUET Engineer",
+    duration: "৬:৩২",
+    youtubeId: "dQw4w9WgXcQ",
   },
 ];
 
+function useDragScroll<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      isDown = true;
+      startX = e.clientX;
+      startScroll = el.scrollLeft;
+      el.classList.add("cursor-grabbing");
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!isDown) return;
+      el.scrollLeft = startScroll - (e.clientX - startX);
+    };
+    const onUp = () => {
+      isDown = false;
+      el.classList.remove("cursor-grabbing");
+    };
+    el.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      el.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, []);
+  return ref;
+}
+
 export default function Teachers() {
+  const [active, setActive] = useState<TeacherVideo | null>(null);
+  const rowRef = useDragScroll<HTMLDivElement>();
+  const teachersRowRef = useDragScroll<HTMLDivElement>();
+
+  useEffect(() => {
+    if (!active) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [active]);
+
   return (
-    <section id="teachers" className="relative py-20">
+    <section id="teachers" className="relative py-10">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <SectionTitle
           eyebrow="শিক্ষকবৃন্দ"
           title="দেশের সেরা শিক্ষকদের সাথে শিখুন"
           subtitle="পেশাগত অভিজ্ঞতা ও আধুনিক টিচিং মেথডে দক্ষ আমাদের শিক্ষকমণ্ডলী"
         />
+      </div>
 
-        {/* Video row */}
-        <div className="mb-12 grid gap-5 lg:grid-cols-2">
+      {/* Full-width drag-scroll video row */}
+      <div className="relative mb-10">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-paper-100 to-transparent sm:w-20" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-paper-100 to-transparent sm:w-20" />
+        <div
+          ref={rowRef}
+          style={{ touchAction: "pan-x" }}
+          className="no-scrollbar flex cursor-grab gap-4 overflow-x-auto scroll-smooth px-4 pb-2 sm:px-8 lg:px-12"
+        >
           {VIDEOS.map((v) => (
-            <div
-              key={v.title}
-              className={`group relative aspect-[16/9] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br ${v.thumb} shadow-card`}
+            <button
+              key={v.id}
+              onClick={() => setActive(v)}
+              className={`group relative aspect-[16/10] w-[70%] shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${v.thumb} text-left shadow-card transition hover:-translate-y-1 hover:shadow-card-hover sm:w-[40%] lg:w-[26%]`}
             >
-              <div className="absolute inset-0 bg-black/30 transition-opacity group-hover:bg-black/40" />
-              {/* abstract shapes */}
+              <div className="absolute inset-0 bg-black/25 transition-opacity group-hover:bg-black/35" />
               <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-white/10 blur-3xl" />
               <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-black/30 blur-3xl" />
 
-              {/* presenter pill */}
-              <div className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white backdrop-blur">
+              <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-bold text-white ring-1 ring-white/25 backdrop-blur">
                 <Award className="h-3 w-3 text-gold-300" /> {v.presenter}
-              </div>
+              </span>
 
-              {/* duration */}
-              <div className="absolute right-5 top-5 rounded-md bg-black/50 px-2 py-1 text-[11px] font-bold text-white backdrop-blur">
-                {v.duration}
-              </div>
+              <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-md bg-ink-900/60 px-1.5 py-0.5 text-[10px] font-bold text-white backdrop-blur">
+                <Clock className="h-3 w-3" /> {v.duration}
+              </span>
 
-              {/* play */}
-              <button className="absolute left-1/2 top-1/2 grid h-20 w-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-gold-500 text-ink-900 shadow-glow transition-transform group-hover:scale-110">
-                <Play className="ml-1 h-8 w-8 fill-current" />
-              </button>
+              <span className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-gold-500 text-ink-900 shadow-glow ring-4 ring-white/20 transition group-hover:scale-110">
+                <Play className="ml-0.5 h-5 w-5 fill-current" />
+              </span>
 
-              {/* bottom info */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-5 pt-12">
-                <h3 className="font-display text-xl font-extrabold text-white">
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-10">
+                <h3 className="font-display text-sm font-extrabold leading-tight text-white sm:text-base">
                   {v.title}
                 </h3>
-                <p className="text-xs text-white/80">{v.sub}</p>
+                <p className="text-[10px] text-white/80">{v.sub}</p>
               </div>
-            </div>
+            </button>
           ))}
         </div>
+      </div>
 
-        {/* Teacher cards */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Teacher info cards — draggable carousel matching video row */}
+      <div className="relative">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-paper-100 to-transparent sm:w-20" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-paper-100 to-transparent sm:w-20" />
+        <div
+          ref={teachersRowRef}
+          style={{ touchAction: "pan-x" }}
+          className="no-scrollbar flex cursor-grab gap-4 overflow-x-auto scroll-smooth px-4 pb-2 pt-2 sm:px-8 lg:px-12"
+        >
           {TEACHERS.map((t) => (
             <article
               key={t.id}
-              className="group relative flex flex-col overflow-hidden rounded-3xl border border-paper-300 bg-white text-center shadow-card transition-all hover:-translate-y-1 hover:border-gold-500/40 hover:shadow-card-hover"
+              className="group relative flex w-[70%] shrink-0 flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white text-center shadow-card transition hover:-translate-y-1 hover:border-gold-500/40 hover:shadow-card-hover sm:w-[40%] lg:w-[22%]"
             >
               {/* Cover banner */}
               <div className="relative h-28 w-full overflow-hidden bg-slide-purple">
@@ -190,6 +332,46 @@ export default function Teachers() {
           ))}
         </div>
       </div>
+
+      {active && (
+        <div
+          onClick={() => setActive(null)}
+          className="fixed inset-0 z-[60] grid place-items-center bg-ink-900/80 p-4 backdrop-blur-sm"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-4xl overflow-hidden rounded-2xl bg-ink-900 shadow-glow"
+          >
+            <div className="flex items-center justify-between gap-3 px-4 py-3 text-white">
+              <div className="min-w-0">
+                <div className="truncate text-sm font-bold sm:text-base">{active.title}</div>
+                <div className="truncate text-[11px] text-white/70">{active.sub}</div>
+              </div>
+              <button
+                onClick={() => setActive(null)}
+                aria-label="Close"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="aspect-video w-full bg-black">
+              <iframe
+                src={`https://www.youtube.com/embed/${active.youtubeId}?autoplay=1&rel=0`}
+                title={active.title}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="h-full w-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </section>
   );
 }

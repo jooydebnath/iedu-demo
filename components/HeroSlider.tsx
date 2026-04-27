@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   GraduationCap,
-  ChevronLeft,
-  ChevronRight,
   ArrowRight,
   Sparkles,
   Rocket,
@@ -12,6 +10,7 @@ import {
   Stethoscope,
   Cpu,
   Play,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import { cn, toBn } from "@/lib/utils";
@@ -122,16 +121,25 @@ export default function HeroSlider() {
     };
   }, [paused, go]);
 
-  // Touch swipe
+  // Pointer-based swipe (works for touch + mouse drag on desktop)
   const startX = useRef<number | null>(null);
-  const onTouchStart = (e: React.TouchEvent) => {
-    startX.current = e.touches[0].clientX;
+  const dragging = useRef(false);
+  const onPointerDown = (e: React.PointerEvent) => {
+    startX.current = e.clientX;
+    dragging.current = true;
+    setPaused(true);
+    (e.target as Element).setPointerCapture?.(e.pointerId);
   };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (startX.current == null) return;
-    const dx = e.changedTouches[0].clientX - startX.current;
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!dragging.current || startX.current == null) {
+      dragging.current = false;
+      return;
+    }
+    const dx = e.clientX - startX.current;
     if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
     startX.current = null;
+    dragging.current = false;
+    setPaused(false);
   };
 
   return (
@@ -143,7 +151,7 @@ export default function HeroSlider() {
       <div className="pointer-events-none absolute -left-32 top-20 h-96 w-96 rounded-full bg-ink-500/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-32 top-40 h-96 w-96 rounded-full bg-gold-400/15 blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-8 lg:px-8 lg:pb-20 lg:pt-10">
+      <div className="relative mx-auto max-w-7xl px-4 pb-6 pt-8 lg:px-8 lg:pb-8 lg:pt-10">
         {/* Heading row */}
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
@@ -155,31 +163,16 @@ export default function HeroSlider() {
               জনপ্রিয় <span className="text-ink-500">কোর্সসমূহ</span> দেখুন
             </h1>
           </div>
-          <div className="hidden items-center gap-2 sm:flex">
-            <button
-              onClick={() => go(-1)}
-              aria-label="Previous"
-              className="grid h-11 w-11 place-items-center rounded-full border border-paper-300 bg-white text-body shadow-card transition hover:bg-ink-500 hover:text-white"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => go(1)}
-              aria-label="Next"
-              className="grid h-11 w-11 place-items-center rounded-full border border-paper-300 bg-white text-body shadow-card transition hover:bg-ink-500 hover:text-white"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
         </div>
 
         {/* Slider viewport */}
         <div
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-          className="relative overflow-hidden rounded-[2rem] border border-paper-300 bg-white shadow-card"
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          className="relative cursor-grab touch-pan-y select-none overflow-hidden rounded-[2rem] border border-paper-300 bg-white shadow-card active:cursor-grabbing"
         >
           <div
             className="flex transition-transform duration-700 ease-out"
@@ -189,22 +182,6 @@ export default function HeroSlider() {
               <SlideCard key={s.id} slide={s} />
             ))}
           </div>
-
-          {/* mobile arrows */}
-          <button
-            onClick={() => go(-1)}
-            aria-label="Previous"
-            className="absolute left-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-body shadow-card backdrop-blur sm:hidden"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => go(1)}
-            aria-label="Next"
-            className="absolute right-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-body shadow-card backdrop-blur sm:hidden"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
 
           {/* Dots */}
           <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
@@ -239,28 +216,35 @@ export default function HeroSlider() {
         </div>
 
         {/* Quick stats below slider */}
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {[
-            { v: `${toBn(50)}K+`, l: "শিক্ষার্থী", icon: Sparkles },
-            { v: `${toBn(120)}+`, l: "লাইভ কোর্স", icon: Rocket },
-            { v: `${toBn(95)}%`, l: "সাফল্যের হার", icon: Trophy },
-            { v: `${toBn(2000)}+`, l: "ভিডিও লেকচার", icon: Play },
+            { v: `${toBn(50)}K+`, l: "শিক্ষার্থী", icon: Users, accent: "from-blue-500 to-indigo-500" },
+            { v: `${toBn(120)}+`, l: "লাইভ কোর্স", icon: Rocket, accent: "from-rose-500 to-pink-500" },
+            { v: `${toBn(95)}%`, l: "সাফল্যের হার", icon: Trophy, accent: "from-amber-500 to-orange-500" },
+            { v: `${toBn(2000)}+`, l: "ভিডিও লেকচার", icon: Play, accent: "from-emerald-500 to-teal-500" },
           ].map((s) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.l}
-                className="light-card flex items-center gap-3 rounded-2xl px-4 py-3"
+                className="group relative overflow-hidden rounded-xl border border-paper-300 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-gold-500/40 hover:shadow-card-hover"
               >
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-gold-500/15 text-gold-700">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="font-display text-lg font-extrabold text-body">
-                    {s.v}
+                <div
+                  className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${s.accent} opacity-15 blur-2xl transition group-hover:opacity-30`}
+                />
+                <div className="relative flex items-center gap-3">
+                  <div
+                    className={`grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-gradient-to-br ${s.accent} text-white shadow-glow-sm`}
+                  >
+                    <Icon className="h-5 w-5" strokeWidth={2.4} />
                   </div>
-                  <div className="text-[11px] font-medium text-body-muted">
-                    {s.l}
+                  <div className="min-w-0">
+                    <div className="font-display text-xl font-extrabold leading-tight text-ink-900">
+                      {s.v}
+                    </div>
+                    <div className="text-[11px] font-semibold text-body-muted">
+                      {s.l}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -125,7 +125,7 @@ const BOOKS: Book[] = [
 
 export default function Books() {
   return (
-    <section id="books" className="relative py-20">
+    <section id="books" className="relative py-10">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <SectionTitle
           eyebrow="বইসমূহ"

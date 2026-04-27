@@ -36,7 +36,7 @@ const REVIEWS = [
 
 export default function Testimonials() {
   return (
-    <section className="relative py-20">
+    <section className="relative py-10">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <SectionTitle
           eyebrow="শিক্ষার্থীদের মতামত"

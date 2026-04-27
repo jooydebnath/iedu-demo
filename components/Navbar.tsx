@@ -94,16 +94,15 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="hidden items-center gap-1.5 rounded-full border border-paper-300 bg-white px-4 py-2 text-sm font-medium text-body transition hover:border-ink-500/50 hover:text-ink-500 sm:inline-flex"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink-500"
+              style={{ borderRadius: 8 }}
             >
               <LogIn className="h-4 w-4" /> লগইন
             </Link>
-            <Link href="/signup" className="btn-gold !py-2 !px-4 text-sm hidden sm:inline-flex">
-              সাইন আপ
-            </Link>
             <button
               onClick={() => setOpen((v) => !v)}
-              className="grid h-10 w-10 place-items-center rounded-full border border-paper-300 bg-white text-body lg:hidden"
+              className="grid h-10 w-10 place-items-center border border-paper-300 bg-white text-body lg:hidden"
+              style={{ borderRadius: 8 }}
               aria-label="Menu"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -135,16 +134,10 @@ export default function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="btn-ghost flex-1"
+                  className="flex flex-1 items-center justify-center gap-1.5 bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white"
+                  style={{ borderRadius: 8 }}
                 >
                   <LogIn className="h-4 w-4" /> লগইন
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setOpen(false)}
-                  className="btn-gold flex-1 !py-2.5"
-                >
-                  সাইন আপ
                 </Link>
               </div>
             </nav>

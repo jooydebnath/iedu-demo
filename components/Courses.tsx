@@ -234,7 +234,7 @@ export default function Courses() {
     tab === "all" ? COURSES : COURSES.filter((c) => c.category === tab);
 
   return (
-    <section id="courses" className="relative bg-paper-200/60 py-20">
+    <section id="courses" className="relative bg-paper-200/60 py-10">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-purple-glow" />
       <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
         <SectionTitle

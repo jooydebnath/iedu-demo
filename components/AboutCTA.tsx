@@ -4,7 +4,7 @@ import { GraduationCap, Sparkles, ArrowRight } from "lucide-react";
 
 export default function AboutCTA() {
   return (
-    <section className="relative py-20">
+    <section className="relative py-10">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-ink-700 via-ink-800 to-ink-900 p-8 shadow-card sm:p-12 lg:p-16">
           {/* decorative */}
