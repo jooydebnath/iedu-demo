@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   Clock,
   Users,
@@ -357,12 +358,12 @@ function CourseCard({ course: c }: { course: Course }) {
               </div>
             )}
           </div>
-          <a
-            href={`#course-${c.id}`}
+          <Link
+            href={`/courses/${c.id}`}
             className="inline-flex items-center gap-1.5 rounded-full bg-gold-gradient px-4 py-2 text-xs font-bold text-ink-900 shadow-glow-sm transition hover:scale-105"
           >
             ভর্তি হই <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          </Link>
         </div>
       </div>
     </article>
