@@ -267,7 +267,7 @@ export default function Courses() {
         </div>
 
         {/* Cards */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((c) => (
             <CourseCard key={c.id} course={c} />
           ))}
@@ -285,84 +285,100 @@ export default function Courses() {
 }
 
 function CourseCard({ course: c }: { course: Course }) {
+  const discount = c.oldPrice
+    ? Math.round(((c.oldPrice - c.price) / c.oldPrice) * 100)
+    : 0;
+
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-paper-300 bg-white shadow-card transition-all hover:-translate-y-1 hover:border-gold-500/40 hover:shadow-card-hover">
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover hover:ring-1 hover:ring-gold-500/20">
       {/* Thumbnail banner */}
       <CourseThumb course={c} />
 
       {/* Body */}
-      <div className="relative flex flex-1 flex-col p-6 pt-5">
-        {/* Level chip */}
-        <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1 rounded-full bg-paper-100 px-2.5 py-1 text-[11px] font-bold text-body-soft ring-1 ring-inset ring-paper-300">
-            <GraduationCap className="h-3 w-3" />
-            {c.level}
-          </span>
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
-            <Star className="h-3 w-3 fill-current" /> {toBn(c.rating)} • বেস্টসেলার
+      <div className="relative flex flex-1 flex-col p-5">
+        {/* Title area */}
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <h3 className="font-display text-lg font-extrabold leading-tight text-body">
+              {c.title}
+            </h3>
+            <p className="mt-0.5 text-xs text-body-soft">{c.subtitle}</p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-[11px] font-bold text-emerald-600">
+            <Star className="h-3 w-3 fill-current" /> {toBn(c.rating)}
           </span>
         </div>
 
-        {/* Title */}
-        <h3 className="mt-3 font-display text-xl font-extrabold leading-tight text-body">
-          {c.title}
-        </h3>
-        <p className="mt-1 text-sm text-body-soft">{c.subtitle}</p>
+        {/* Level pill */}
+        <div className="mt-2.5">
+          <span className="inline-flex items-center gap-1 rounded-md bg-paper-100 px-2 py-1 text-[10px] font-bold text-body-muted">
+            <GraduationCap className="h-3 w-3" />
+            {c.level}
+          </span>
+        </div>
 
-        {/* Perks */}
-        <ul className="mt-4 grid grid-cols-2 gap-1.5">
-          {c.perks.map((p) => (
-            <li
+        {/* Perks — compact horizontal chips */}
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {c.perks.slice(0, 3).map((p) => (
+            <span
               key={p}
-              className="flex items-center gap-1.5 text-xs text-body-soft"
+              className="inline-flex items-center gap-1 rounded-full border border-paper-200 bg-paper-50 px-2 py-0.5 text-[10px] font-semibold text-body-soft"
             >
-              <CheckCircle2 className="h-3.5 w-3.5 text-gold-600 shrink-0" />
+              <CheckCircle2 className="h-3 w-3 text-gold-600" />
               {p}
-            </li>
+            </span>
           ))}
-        </ul>
+          {c.perks.length > 3 && (
+            <span className="inline-flex items-center rounded-full bg-paper-100 px-2 py-0.5 text-[10px] font-semibold text-body-muted">
+              +{c.perks.length - 3}
+            </span>
+          )}
+        </div>
 
-        {/* Stats */}
-        <div className="mt-5 flex items-center gap-4 border-t border-paper-300 pt-4 text-xs text-body-muted">
+        {/* Stats — subtle row */}
+        <div className="mt-3.5 flex items-center gap-3 border-t border-paper-200/70 pt-3 text-[11px] text-body-muted">
           <span className="inline-flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5 text-gold-600" /> {c.duration}
+            <Clock className="h-3 w-3 text-gold-600" /> {c.duration}
           </span>
           <span className="inline-flex items-center gap-1">
-            <PlayCircle className="h-3.5 w-3.5 text-gold-600" />
+            <PlayCircle className="h-3 w-3 text-gold-600" />
             {toBn(c.classes)} ক্লাস
           </span>
           <span className="inline-flex items-center gap-1">
-            <Users className="h-3.5 w-3.5 text-gold-600" />
+            <Users className="h-3 w-3 text-gold-600" />
             {toBn(Math.floor(c.students / 1000))}K+
           </span>
         </div>
 
-        {/* Footer: price + cta */}
-        <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+        {/* Price + CTA */}
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
           <div>
             <div className="flex items-baseline gap-2">
               <span className="font-display text-2xl font-extrabold text-ink-500">
                 ৳{toBn(c.price)}
               </span>
               {c.oldPrice && (
-                <span className="text-sm font-semibold text-body-muted line-through">
+                <span className="text-xs font-semibold text-body-muted line-through">
                   ৳{toBn(c.oldPrice)}
                 </span>
               )}
             </div>
             {c.oldPrice && (
-              <div className="mt-0.5 text-[11px] font-bold text-emerald-600">
-                {toBn(
-                  Math.round(((c.oldPrice - c.price) / c.oldPrice) * 100)
-                )}% বাঁচান
+              <div className="mt-0.5 flex items-center gap-1">
+                <span className="inline-block rounded bg-rose-50 px-1.5 py-0.5 text-[10px] font-extrabold text-rose-500">
+                  -{toBn(discount)}%
+                </span>
+                <span className="text-[10px] font-semibold text-emerald-600">
+                  বাঁচান ৳{toBn(c.oldPrice - c.price)}
+                </span>
               </div>
             )}
           </div>
           <Link
             href={`/courses/${c.id}`}
-            className="inline-flex items-center gap-1.5 rounded-full bg-gold-gradient px-4 py-2 text-xs font-bold text-ink-900 shadow-glow-sm transition hover:scale-105"
+            className="inline-flex items-center gap-1.5 rounded-full bg-gold-gradient px-4 py-2 text-xs font-extrabold text-ink-900 shadow-glow-sm transition-all hover:scale-105 active:scale-95"
           >
-            ভর্তি হই <ArrowRight className="h-3.5 w-3.5" />
+            বিস্তারিত <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
       </div>
@@ -374,85 +390,85 @@ function CourseCard({ course: c }: { course: Course }) {
  *  dark-purple + gold style from the user's color demo. */
 function CourseThumb({ course: c }: { course: Course }) {
   return (
-    <div className="relative h-44 w-full overflow-hidden bg-slide-purple">
-      {/* Per-course color halo */}
+    <div className="relative h-40 w-full overflow-hidden bg-gradient-to-br from-[#1a0f3c] to-[#2d1b69]">
+      {/* Soft gradient overlay using course color */}
       <div
         className={cn(
-          "pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-gradient-to-br opacity-60 blur-2xl",
+          "pointer-events-none absolute inset-0 bg-gradient-to-br opacity-30",
+          c.gradient
+        )}
+      />
+
+      {/* Dramatic color halos */}
+      <div
+        className={cn(
+          "pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-gradient-to-br opacity-50 blur-3xl",
           c.badgeColor
         )}
       />
       <div
         className={cn(
-          "pointer-events-none absolute -left-16 -bottom-16 h-44 w-44 rounded-full bg-gradient-to-br opacity-25 blur-3xl",
+          "pointer-events-none absolute -left-10 -bottom-10 h-32 w-32 rounded-full bg-gradient-to-br opacity-20 blur-3xl",
           c.badgeColor
         )}
       />
 
-      {/* Castle silhouette */}
-      <svg
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 w-full opacity-20"
-        viewBox="0 0 600 400"
-        preserveAspectRatio="xMidYMax slice"
-        fill="none"
-      >
-        <path
-          d="M0 320h600v80H0z M40 320V220l30-20v-30h20v30l30 20v100z M150 320V180l40-25v-35h25v35l40 25v140z M280 320V230l35-22v-32h22v32l35 22v90z M400 320V200l45-28v-40h25v40l45 28v120z"
-          fill="white"
-        />
-        <circle cx="120" cy="80" r="2" fill="#FFC107" opacity="0.7" />
-        <circle cx="240" cy="50" r="1.5" fill="#FFC107" opacity="0.8" />
-        <circle cx="380" cy="90" r="2" fill="#FFC107" opacity="0.6" />
-        <circle cx="510" cy="60" r="1.5" fill="#FFC107" opacity="0.8" />
-      </svg>
+      {/* Subtle grid pattern */}
+      <div className="pointer-events-none absolute inset-0 grid-bg opacity-20" />
 
-      {/* Subtle grid */}
-      <div className="pointer-events-none absolute inset-0 grid-bg opacity-25" />
+      {/* Decorative diagonal line */}
+      <div className="pointer-events-none absolute -right-8 top-0 h-px w-40 rotate-45 bg-white/5" />
 
-      {/* Top-left: badge */}
-      <span
-        className={cn(
-          "absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-gradient-to-r px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-md",
-          c.badgeColor
-        )}
-      >
-        <Tag className="h-3 w-3" />
-        {c.badge}
-      </span>
-
-      {/* Top-right: ribbon + brand mark */}
-      <div className="absolute right-3 top-3 flex items-center gap-2">
-        {c.ribbon && (
-          <span
-            className={cn(
-              "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider shadow-glow-sm",
-              c.ribbon === "HOT"
-                ? "bg-rose-500 text-white"
-                : "bg-gold-gradient text-ink-900"
-            )}
-          >
-            {c.ribbon === "HOT" ? (
-              <Flame className="h-3 w-3" />
-            ) : (
-              <Sparkles className="h-3 w-3" />
-            )}
-            {c.ribbon}
-          </span>
-        )}
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-white/15 backdrop-blur ring-1 ring-white/25">
-          <GraduationCap className="h-5 w-5 text-gold-400" />
+      {/* Top bar with badges */}
+      <div className="absolute inset-x-4 top-3.5 flex items-start justify-between">
+        <span
+          className={cn(
+            "inline-flex items-center gap-1 rounded-full bg-gradient-to-r px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-lg",
+            c.badgeColor
+          )}
+        >
+          <Tag className="h-3 w-3" />
+          {c.badge}
         </span>
+
+        <div className="flex items-center gap-1.5">
+          {c.ribbon && (
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider shadow-glow-sm",
+                c.ribbon === "HOT"
+                  ? "bg-rose-500 text-white"
+                  : "bg-gold-gradient text-ink-900"
+              )}
+            >
+              {c.ribbon === "HOT" ? (
+                <Flame className="h-3 w-3" />
+              ) : (
+                <Sparkles className="h-3 w-3" />
+              )}
+              {c.ribbon}
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Bottom-left: pretitle + highlight */}
-      <div className="absolute inset-x-5 bottom-4">
-        <div className="font-display text-3xl font-extrabold leading-none text-white sm:text-4xl">
+      {/* Center content: pretitle + highlight */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="font-display text-4xl font-extrabold leading-none text-white drop-shadow-lg">
           {c.pretitle}
         </div>
-        <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-md bg-gold-500 px-2 py-0.5 font-display text-[11px] font-extrabold uppercase tracking-[0.15em] text-ink-900 shadow-glow-sm">
+        <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-gold-500/90 px-3 py-1 font-display text-[10px] font-extrabold uppercase tracking-wider text-ink-900 shadow-glow-sm backdrop-blur-sm">
           {c.thumbHighlight}
         </div>
+      </div>
+
+      {/* Bottom bar: icon + subtle decoration */}
+      <div className="absolute inset-x-4 bottom-3 flex items-center justify-between">
+        <div className="flex items-center gap-1 text-[10px] font-semibold text-white/40 uppercase tracking-wider">
+          <GraduationCap className="h-3 w-3" />
+          i Education
+        </div>
+        <div className="h-1 w-8 rounded-full bg-white/20" />
       </div>
     </div>
   );
