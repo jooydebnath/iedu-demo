@@ -15,9 +15,8 @@ const FEATURES = [
 export default function Features() {
   return (
     <section className="relative py-20">
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="mx-auto max-w-7xl px-2 lg:px-4">
         <SectionTitle
-          eyebrow="ফ্রি ট্রায়াল"
           title="যে বিষয়গুলো পড়াবো"
           subtitle="প্রতিটি বিষয়ে এক্সপার্ট শিক্ষক, ইন্টারঅ্যাক্টিভ লাইভ ক্লাস ও পরীক্ষা"
         />

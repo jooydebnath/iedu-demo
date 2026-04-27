@@ -122,8 +122,12 @@ function FeatureBanner() {
         </svg>
 
         {/* Brand logo top right */}
-        <div className="absolute right-6 top-6 grid h-12 w-12 place-items-center rounded-full bg-white/10 backdrop-blur ring-1 ring-white/15">
-          <GraduationCap className="h-6 w-6 text-gold-400" />
+        <div className="absolute right-6 top-6 grid h-14 w-14 place-items-center rounded-full bg-white/10 backdrop-blur ring-1 ring-white/15">
+          <img
+            src="/ieducationbd-logo.png"
+            alt="iEducation BD"
+            className="h-10 w-10 object-contain"
+          />
         </div>
 
         {/* Headline */}

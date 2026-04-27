@@ -56,16 +56,12 @@ export default function AffiliateSidebar({
         {/* Header / Logo */}
         <div className="flex items-center justify-between border-b border-paper-300 px-5 py-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-gold-gradient shadow-glow-sm">
-              <GraduationCap
-                className="h-6 w-6 text-ink-900"
-                strokeWidth={2.5}
-              />
-            </div>
+            <img
+              src="/ieducationbd-logo.png"
+              alt="iEducation BD"
+              className="h-10 w-auto object-contain"
+            />
             <div className="leading-tight">
-              <div className="text-[15px] font-extrabold tracking-tight text-body">
-                <span className="text-gold-600">i</span> Education
-              </div>
               <div className="text-[10px] font-medium uppercase tracking-widest text-body-muted">
                 Affiliate Panel
               </div>

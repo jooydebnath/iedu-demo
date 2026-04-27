@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { GraduationCap, Menu, X, LogIn, ChevronDown, Wallet } from "lucide-react";
+import { Menu, X, LogIn, ChevronDown, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -60,17 +60,11 @@ export default function Navbar() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gold-gradient shadow-glow-sm">
-              <GraduationCap className="h-6 w-6 text-ink-900" strokeWidth={2.5} />
-            </div>
-            <div className="leading-tight">
-              <div className="text-lg font-extrabold tracking-tight text-body">
-                <span className="text-gold-600">i</span> Education
-              </div>
-              <div className="text-[10px] font-medium uppercase tracking-widest text-body-muted">
-                A Mark of Success
-              </div>
-            </div>
+            <img
+              src="/ieducationbd-logo.png"
+              alt="iEducation BD"
+              className="h-11 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop nav */}
