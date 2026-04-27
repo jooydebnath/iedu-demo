@@ -236,7 +236,7 @@ export default function Courses() {
   return (
     <section id="courses" className="relative bg-paper-200/60 py-10">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-purple-glow" />
-      <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="relative mx-auto max-w-[1440px] px-4 lg:px-8">
         <SectionTitle
           eyebrow="চলমান কোর্সসমূহ"
           title="তোমার জন্য সেরা কোর্স বেছে নাও"
@@ -267,7 +267,7 @@ export default function Courses() {
         </div>
 
         {/* Cards */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {filtered.map((c) => (
             <CourseCard key={c.id} course={c} />
           ))}
@@ -317,24 +317,6 @@ function CourseCard({ course: c }: { course: Course }) {
           </span>
         </div>
 
-        {/* Perks — compact horizontal chips */}
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {c.perks.slice(0, 3).map((p) => (
-            <span
-              key={p}
-              className="inline-flex items-center gap-1 rounded-full border border-paper-200 bg-paper-50 px-2 py-0.5 text-[10px] font-semibold text-body-soft"
-            >
-              <CheckCircle2 className="h-3 w-3 text-gold-600" />
-              {p}
-            </span>
-          ))}
-          {c.perks.length > 3 && (
-            <span className="inline-flex items-center rounded-full bg-paper-100 px-2 py-0.5 text-[10px] font-semibold text-body-muted">
-              +{c.perks.length - 3}
-            </span>
-          )}
-        </div>
-
         {/* Stats — subtle row */}
         <div className="mt-3.5 flex items-center gap-3 border-t border-paper-200/70 pt-3 text-[11px] text-body-muted">
           <span className="inline-flex items-center gap-1">
@@ -363,16 +345,6 @@ function CourseCard({ course: c }: { course: Course }) {
                 </span>
               )}
             </div>
-            {c.oldPrice && (
-              <div className="mt-0.5 flex items-center gap-1">
-                <span className="inline-block rounded bg-rose-50 px-1.5 py-0.5 text-[10px] font-extrabold text-rose-500">
-                  -{toBn(discount)}%
-                </span>
-                <span className="text-[10px] font-semibold text-emerald-600">
-                  বাঁচান ৳{toBn(c.oldPrice - c.price)}
-                </span>
-              </div>
-            )}
           </div>
           <Link
             href={`/courses/${c.id}`}
@@ -389,6 +361,9 @@ function CourseCard({ course: c }: { course: Course }) {
 /** Branded "banner" thumbnail at the top of every course card. Matches the
  *  dark-purple + gold style from the user's color demo. */
 function CourseThumb({ course: c }: { course: Course }) {
+  const discount = c.oldPrice
+    ? Math.round(((c.oldPrice - c.price) / c.oldPrice) * 100)
+    : 0;
   return (
     <div className="relative h-40 w-full overflow-hidden bg-gradient-to-br from-[#1a0f3c] to-[#2d1b69]">
       {/* Soft gradient overlay using course color */}
@@ -431,8 +406,8 @@ function CourseThumb({ course: c }: { course: Course }) {
           {c.badge}
         </span>
 
-        <div className="flex items-center gap-1.5">
-          {c.ribbon && (
+        <div className="flex flex-col items-end gap-1.5">
+          {c.ribbon && !discount && (
             <span
               className={cn(
                 "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider shadow-glow-sm",
@@ -452,6 +427,16 @@ function CourseThumb({ course: c }: { course: Course }) {
         </div>
       </div>
 
+      {/* Discount pill (top-right) */}
+      {discount > 0 && (
+        <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-ink-900 py-1 pl-3 pr-1 text-[11px] font-extrabold text-white shadow-md ring-1 ring-white/10">
+          ছাড়
+          <span className="rounded-full bg-gold-500 px-2 py-0.5 font-display text-[11px] font-extrabold leading-none text-ink-900">
+            {toBn(discount)}%
+          </span>
+        </span>
+      )}
+
       {/* Center content: pretitle + highlight */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <div className="font-display text-4xl font-extrabold leading-none text-white drop-shadow-lg">
@@ -462,14 +447,6 @@ function CourseThumb({ course: c }: { course: Course }) {
         </div>
       </div>
 
-      {/* Bottom bar: icon + subtle decoration */}
-      <div className="absolute inset-x-4 bottom-3 flex items-center justify-between">
-        <div className="flex items-center gap-1 text-[10px] font-semibold text-white/40 uppercase tracking-wider">
-          <GraduationCap className="h-3 w-3" />
-          i Education
-        </div>
-        <div className="h-1 w-8 rounded-full bg-white/20" />
-      </div>
     </div>
   );
 }

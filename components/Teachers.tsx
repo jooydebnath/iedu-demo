@@ -251,6 +251,14 @@ export default function Teachers() {
         </div>
       </div>
 
+      <div className="mx-auto mt-6 max-w-7xl px-4 lg:px-8">
+        <SectionTitle
+          eyebrow="আমাদের শিক্ষকমণ্ডলী"
+          title="পরিচিত হোন আমাদের অভিজ্ঞ শিক্ষকদের সাথে"
+          subtitle="ক্লিক করে দেখুন প্রতিটি শিক্ষকের বিস্তারিত প্রোফাইল"
+        />
+      </div>
+
       {/* Teacher info cards — draggable carousel matching video row */}
       <div className="relative">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-paper-100 to-transparent sm:w-20" />
@@ -322,7 +330,7 @@ export default function Teachers() {
                 </div>
 
                 <a
-                  href="#"
+                  href={`/teachers/${t.id}`}
                   className="mt-4 inline-flex items-center justify-center gap-1 text-xs font-bold text-ink-500 hover:text-ink-600"
                 >
                   প্রোফাইল দেখুন <ChevronRight className="h-3.5 w-3.5" />

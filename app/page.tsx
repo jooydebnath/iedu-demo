@@ -19,7 +19,6 @@ export default function Home() {
     <main className="relative min-h-screen overflow-hidden bg-paper-100 text-body">
       <Navbar />
       <HeroSlider />
-      <QuickAccess />
       <Features />
       <Courses />
       <Books />

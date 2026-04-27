@@ -126,14 +126,14 @@ const BOOKS: Book[] = [
 export default function Books() {
   return (
     <section id="books" className="relative py-10">
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="mx-auto max-w-[1440px] px-4 lg:px-8">
         <SectionTitle
           eyebrow="বইসমূহ"
           title="আমাদের প্রকাশিত বইগুলো"
           subtitle="পরীক্ষায় টপ স্কোরের জন্য তৈরি — দেশের সেরা শিক্ষকদের লেখা"
         />
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {BOOKS.map((b) => (
             <BookCard key={b.id} book={b} />
           ))}
