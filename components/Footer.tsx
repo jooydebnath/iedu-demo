@@ -111,9 +111,14 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-3 border-t border-white/5 py-6 text-xs text-muted sm:flex-row">
-          <div>
-            © {new Date().getFullYear()}{" "}
-            <span className="font-bold text-gold-400">i Education</span>. সর্বস্বত্ব সংরক্ষিত।
+          <div className="inline-flex items-center gap-1.5">
+            © {new Date().getFullYear()}
+            <img
+              src="/ieducationbd-logo.png"
+              alt="iEducation BD"
+              className="inline-block h-5 w-auto object-contain brightness-0 invert"
+            />
+            . সর্বস্বত্ব সংরক্ষিত।
           </div>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:text-gold-400">টার্মস</a>

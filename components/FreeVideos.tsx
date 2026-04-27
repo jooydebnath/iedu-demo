@@ -141,7 +141,7 @@ export default function FreeVideos() {
 
   return (
     <section className="relative py-10">
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="mx-auto max-w-[1440px] px-4 lg:px-8">
         <SectionTitle
           eyebrow="ফ্রি ভিডিও ক্লাস"
           title="সেরা ভিডিও লেকচার"

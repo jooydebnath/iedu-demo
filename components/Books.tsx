@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ShoppingCart, Star, ArrowRight, BookOpen } from "lucide-react";
 import { toBn } from "@/lib/utils";
 import SectionTitle from "./SectionTitle";
@@ -153,7 +154,10 @@ export default function Books() {
 function BookCard({ book: b }: { book: Book }) {
   const discount = Math.round(((b.oldPrice - b.price) / b.oldPrice) * 100);
   return (
-    <article className="group relative flex overflow-hidden rounded-3xl border border-paper-300 bg-white p-4 shadow-card transition-all hover:-translate-y-1 hover:border-gold-500/40 hover:shadow-card-hover">
+    <Link
+      href={`/books/${b.id}`}
+      className="group relative flex overflow-hidden rounded-3xl border border-paper-300 bg-white p-4 shadow-card transition-all hover:-translate-y-1 hover:border-gold-500/40 hover:shadow-card-hover"
+    >
       {/* Cover */}
       <div className="relative shrink-0">
         <div
@@ -205,11 +209,11 @@ function BookCard({ book: b }: { book: Book }) {
               ৳{toBn(b.oldPrice)}
             </div>
           </div>
-          <button className="inline-flex items-center gap-1 rounded-full bg-ink-800 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-gold-500 hover:text-ink-900">
+          <span className="inline-flex items-center gap-1 rounded-full bg-ink-800 px-3 py-1.5 text-[11px] font-bold text-white transition group-hover:bg-gold-500 group-hover:text-ink-900">
             <ShoppingCart className="h-3.5 w-3.5" /> অর্ডার
-          </button>
+          </span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

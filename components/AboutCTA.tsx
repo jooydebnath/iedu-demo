@@ -18,8 +18,13 @@ export default function AboutCTA() {
                 <Sparkles className="h-3.5 w-3.5" />
                 A Mark of Success
               </span>
-              <h3 className="mt-4 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl">
-                <span className="text-gold-400">i Education</span> এর সাথে গড়ো তোমার সফল ক্যারিয়ার
+              <h3 className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl">
+                <img
+                  src="/ieducationbd-logo.png"
+                  alt="iEducation BD"
+                  className="inline-block h-10 w-auto object-contain brightness-0 invert sm:h-12"
+                />
+                <span>এর সাথে গড়ো তোমার সফল ক্যারিয়ার</span>
               </h3>
               <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted">
                 ৫০ হাজারেরও বেশি শিক্ষার্থীর প্রথম পছন্দ। প্রিমিয়াম কোয়ালিটি কনটেন্ট, এক্সপার্ট মেন্টরশিপ ও আধুনিক লার্নিং প্ল্যাটফর্ম — সবকিছু এক জায়গায়।

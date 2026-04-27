@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, LogIn, ChevronDown, Wallet } from "lucide-react";
+import { Menu, X, LogIn, ChevronDown, Wallet, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/lib/cart";
+import { toBn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { label: "হোম", href: "/" },
@@ -21,6 +23,7 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { count } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -92,6 +95,19 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
+            <Link
+              href="/checkout"
+              aria-label="Cart"
+              className="relative grid h-10 w-10 place-items-center rounded-lg border border-paper-300 bg-white text-body transition hover:border-gold-500/60 hover:text-ink-500"
+              style={{ borderRadius: 8 }}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              {count > 0 && (
+                <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-extrabold text-white ring-2 ring-white">
+                  {toBn(count)}
+                </span>
+              )}
+            </Link>
             <Link
               href="/login"
               className="inline-flex items-center gap-1.5 rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink-500"

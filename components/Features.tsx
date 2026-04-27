@@ -103,7 +103,7 @@ export default function Features() {
                 key={c.key}
                 onClick={() => setActive(c.key)}
                 className={
-                  "group inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-bold transition " +
+                  "group inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-bold transition " +
                   (isActive
                     ? "border-transparent bg-ink-900 text-white shadow-glow-sm"
                     : "border-paper-300 bg-white text-body hover:border-gold-500/50 hover:text-ink-900")
@@ -113,7 +113,7 @@ export default function Features() {
                 <span>{c.label}</span>
                 <span
                   className={
-                    "rounded-full px-2 py-0.5 text-[10px] font-semibold " +
+                    "rounded-lg px-2 py-0.5 text-[10px] font-semibold " +
                     (isActive
                       ? "bg-gold-500/20 text-gold-300"
                       : "bg-paper-100 text-body-muted")
@@ -127,7 +127,7 @@ export default function Features() {
         </div>
 
         {/* Subjects panel */}
-        <div className="rounded-3xl border border-paper-300 bg-white/70 p-4 shadow-card backdrop-blur sm:p-6">
+        <div>
           {activeMeta && (
             <div className="mb-4 flex items-center justify-between px-1">
               <div className="text-sm font-semibold text-body-muted">
@@ -145,13 +145,13 @@ export default function Features() {
             {subjects.map(({ icon: Icon, label, color }) => (
               <div
                 key={label}
-                className="group relative overflow-hidden rounded-2xl border border-paper-300 bg-white p-4 shadow-card transition-all hover:-translate-y-1 hover:border-gold-500/40 hover:shadow-card-hover"
+                className="group relative overflow-hidden rounded-lg border border-paper-300 bg-white p-4 shadow-card transition-all hover:-translate-y-1 hover:border-gold-500/40 hover:shadow-card-hover"
               >
                 <div
                   className={`absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gradient-to-br ${color} opacity-25 blur-2xl transition-opacity group-hover:opacity-50`}
                 />
                 <div
-                  className={`relative inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${color} shadow-lg`}
+                  className={`relative inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br ${color} shadow-lg`}
                 >
                   <Icon className="h-6 w-6 text-white" strokeWidth={2} />
                 </div>

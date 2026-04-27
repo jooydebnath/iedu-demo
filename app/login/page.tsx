@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { login as doLogin } from "@/lib/auth";
+import { useToast } from "@/lib/toast";
 import {
   Phone,
   Lock,
@@ -15,6 +18,11 @@ import {
 import AuthShell from "@/components/AuthShell";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const sp = useSearchParams();
+  const from = sp.get("from") || "/";
+  const toast = useToast();
+
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
@@ -25,23 +33,13 @@ export default function LoginPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    if (!/^01[3-9]\d{8}$/.test(phone.trim())) {
-      setError("সঠিক ১১-ডিজিটের মোবাইল নাম্বার দিন (01XXXXXXXXX)");
-      return;
-    }
-    if (password.length < 6) {
-      setError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে");
-      return;
-    }
-
     setLoading(true);
-    // TODO: replace with real API call
-    await new Promise((r) => setTimeout(r, 900));
+    await new Promise((r) => setTimeout(r, 400));
+    doLogin({ phone });
     setLoading(false);
-
-    // Mock: redirect to /profile
-    window.location.href = "/profile";
+    toast.success("সফলভাবে লগইন হয়েছে!");
+    router.replace(from);
+    router.refresh();
   };
 
   return (

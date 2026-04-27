@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/lib/cart";
+import { ToastProvider } from "@/lib/toast";
 
 const hind = Hind_Siliguri({
   subsets: ["bengali", "latin"],
@@ -22,9 +24,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bn" className={hind.variable}>
-      <body className="font-bangla bg-paper-100 text-body antialiased">
-        {children}
+    <html lang="bn" className={hind.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body className="font-bangla bg-paper-100 text-body antialiased" suppressHydrationWarning>
+        <ToastProvider>
+          <CartProvider>{children}</CartProvider>
+        </ToastProvider>
       </body>
     </html>
   );

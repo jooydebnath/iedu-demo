@@ -16,6 +16,8 @@
 
   body {
     background-color: var(--bg);
+    background-image: radial-gradient(rgba(70, 35, 166, 0.12) 1px, transparent 1px);
+    background-size: 22px 22px;
     color: var(--ink);
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
@@ -96,6 +98,37 @@
       linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
     background-size: 32px 32px;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(70, 35, 166, 0.08);
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+    animation: skeleton-shimmer 1.4s infinite;
+  }
+  @keyframes skeleton-shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Light dot pattern background */
+  .dot-bg {
+    background-image: radial-gradient(rgba(70, 35, 166, 0.12) 1px, transparent 1px);
+    background-size: 22px 22px;
   }
 
   /* Light grid */

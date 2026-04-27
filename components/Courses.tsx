@@ -427,11 +427,11 @@ function CourseThumb({ course: c }: { course: Course }) {
         </div>
       </div>
 
-      {/* Discount pill (top-right) */}
+      {/* Discount pill — split colors, one card */}
       {discount > 0 && (
-        <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-ink-900 py-1 pl-3 pr-1 text-[11px] font-extrabold text-white shadow-md ring-1 ring-white/10">
-          ছাড়
-          <span className="rounded-full bg-gold-500 px-2 py-0.5 font-display text-[11px] font-extrabold leading-none text-ink-900">
+        <span className="absolute right-0 top-3 z-10 inline-flex overflow-hidden rounded-l-lg text-[11px] font-extrabold leading-none shadow-md ring-1 ring-white/10">
+          <span className="bg-ink-900 px-2.5 py-1.5 text-white">ছাড়</span>
+          <span className="bg-gold-500 px-2.5 py-1.5 font-display text-ink-900">
             {toBn(discount)}%
           </span>
         </span>

@@ -56,8 +56,12 @@ function Hero() {
         {/* left copy */}
         <div className="text-white">
           <span className="pill-gold !bg-white/15 !text-gold-300 !ring-white/20">
-            <Sparkles className="h-3.5 w-3.5" />
-            i Education অ্যাফিলিয়েট প্রোগ্রাম
+            <img
+              src="/ieducationbd-logo.png"
+              alt="iEducation BD"
+              className="h-5 w-auto object-contain brightness-0 invert"
+            />
+            অ্যাফিলিয়েট প্রোগ্রাম
           </span>
           <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
             শিক্ষা ছড়াও,{" "}

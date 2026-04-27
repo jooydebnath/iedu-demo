@@ -82,10 +82,11 @@ export default function AuthShell({
           </svg>
 
           <div className="relative flex h-full flex-col justify-center px-12 py-24 text-white xl:px-20">
-            <span className="pill-gold !bg-white/15 !text-gold-300 !ring-white/20 w-fit">
-              <Sparkles className="h-3.5 w-3.5" />
-              i Education
-            </span>
+            <img
+              src="/ieducationbd-logo.png"
+              alt="iEducation BD"
+              className="h-10 w-auto object-contain brightness-0 invert"
+            />
             <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight xl:text-5xl">
               {brandTitle}{" "}
               <span className="text-gold-400">{brandHighlight}</span>

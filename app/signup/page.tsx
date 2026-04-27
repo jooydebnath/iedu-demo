@@ -9,17 +9,28 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  Facebook,
-  Chrome,
-  CheckCircle2,
   ShieldCheck,
+  GraduationCap,
+  School,
+  CalendarDays,
+  Users as UsersIcon,
 } from "lucide-react";
 import AuthShell from "@/components/AuthShell";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/lib/toast";
+
+const HSC_BATCHES = ["HSC ২০২৬", "HSC ২০২৭", "HSC ২০২৮", "HSC ২০২৫", "HSC ২০২৪"];
+const SSC_BATCHES = ["SSC ২০২৬", "SSC ২০২৭", "SSC ২০২৮", "SSC ২০২৫", "SSC ২০২৪"];
 
 export default function SignupPage() {
+  const toast = useToast();
   const [name, setName] = useState("");
+  const [gender, setGender] = useState<"male" | "female" | "">("");
+  const [college, setCollege] = useState("");
+  const [hscBatch, setHscBatch] = useState("");
+  const [sscBatch, setSscBatch] = useState("");
   const [phone, setPhone] = useState("");
+  const [guardianPhone, setGuardianPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false);
@@ -34,30 +45,53 @@ export default function SignupPage() {
     setError(null);
 
     if (name.trim().length < 2) {
-      setError("পূর্ণ নাম দিন");
+      toast.error("তোমার পূর্ণ নাম দাও");
+      return;
+    }
+    if (!/^[A-Za-z][A-Za-z .'-]*$/.test(name.trim())) {
+      toast.error("নাম কেবল ইংরেজিতে লিখো");
+      return;
+    }
+    if (!gender) {
+      toast.error("লিঙ্গ সিলেক্ট করো");
+      return;
+    }
+    if (college.trim().length < 2) {
+      toast.error("তোমার কলেজের নাম লিখো");
+      return;
+    }
+    if (!sscBatch) {
+      toast.error("তোমার SSC Batch সিলেক্ট করো");
       return;
     }
     if (!/^01[3-9]\d{8}$/.test(phone.trim())) {
-      setError("সঠিক ১১-ডিজিটের মোবাইল নাম্বার দিন (01XXXXXXXXX)");
+      toast.error("সঠিক ১১-ডিজিটের মোবাইল নাম্বার দাও (01XXXXXXXXX)");
+      return;
+    }
+    if (!/^01[3-9]\d{8}$/.test(guardianPhone.trim())) {
+      toast.error("অভিভাবকের সঠিক ১১-ডিজিটের ফোন নাম্বার দাও");
       return;
     }
     if (password.length < 6) {
-      setError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে");
+      toast.error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে");
       return;
     }
     if (password !== confirm) {
-      setError("পাসওয়ার্ড দুটি মিলছে না");
+      toast.error("পাসওয়ার্ড দুটি মিলছে না");
       return;
     }
     if (!agree) {
-      setError("টার্মস ও কন্ডিশনে সম্মতি প্রয়োজন");
+      toast.error("টার্মস ও কন্ডিশনে সম্মতি প্রয়োজন");
       return;
     }
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
+    await new Promise((r) => setTimeout(r, 700));
+    const { login: doLogin } = await import("@/lib/auth");
+    doLogin({ name, phone });
     setLoading(false);
-    window.location.href = "/profile";
+    toast.success("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
+    window.location.href = "/";
   };
 
   return (
@@ -67,10 +101,13 @@ export default function SignupPage() {
       brandSub="মাত্র কয়েক সেকেন্ডে অ্যাকাউন্ট খুলে শুরু করো লাইভ ক্লাস, ফ্রি রিসোর্স ও মেন্টর সাপোর্ট।"
     >
       <div>
-        <h2 className="font-display text-3xl font-extrabold tracking-tight text-body sm:text-4xl">
-          অ্যাকাউন্ট <span className="text-ink-500">তৈরি করুন</span>
+        <h2 className="text-center font-display text-3xl font-extrabold tracking-tight text-body sm:text-4xl">
+          সাইন আপ করুন
         </h2>
-        <p className="mt-2 text-sm text-body-soft">
+        <p className="mt-2 text-center text-sm text-body-soft">
+          নিচের তথ্যগুলো দিন
+        </p>
+        <p className="mt-1 text-center text-xs text-body-muted">
           আগে থেকেই অ্যাকাউন্ট আছে?{" "}
           <Link
             href="/login"
@@ -80,42 +117,106 @@ export default function SignupPage() {
           </Link>
         </p>
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-paper-300 bg-white px-4 py-2.5 text-sm font-semibold text-body transition hover:border-ink-500/40"
-          >
-            <Chrome className="h-4 w-4 text-rose-500" /> Google
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-paper-300 bg-white px-4 py-2.5 text-sm font-semibold text-body transition hover:border-ink-500/40"
-          >
-            <Facebook className="h-4 w-4 text-blue-600" /> Facebook
-          </button>
-        </div>
-
-        <div className="my-5 flex items-center gap-3 text-xs text-body-muted">
-          <span className="h-px flex-1 bg-paper-300" />
-          অথবা ফর্ম পূরণ করুন
-          <span className="h-px flex-1 bg-paper-300" />
-        </div>
-
-        <form onSubmit={onSubmit} className="space-y-4">
-          <Field label="পূর্ণ নাম" icon={<User className="h-4 w-4" />}>
+        <form onSubmit={onSubmit} className="mt-6 space-y-4">
+          <Field label="তোমার নাম লিখো (English only)" icon={<User className="h-4 w-4" />}>
             <input
               type="text"
               autoComplete="name"
-              placeholder="আপনার নাম"
+              placeholder="Your full name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value.replace(/[^A-Za-z .'-]/g, ""))}
+              pattern="[A-Za-z][A-Za-z .'-]*"
+              className="w-full bg-transparent py-3 text-sm text-body placeholder:text-body-muted focus:outline-none"
+              required
+            />
+          </Field>
+
+          {/* Gender */}
+          <div>
+            <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-body-soft">
+              তোমার লিঙ্গ সিলেক্ট করো
+            </span>
+            <div className="flex items-center gap-5 px-1 py-1">
+              {[
+                { v: "male", l: "ছেলে" },
+                { v: "female", l: "মেয়ে" },
+              ].map((g) => (
+                <label
+                  key={g.v}
+                  className="inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-body"
+                >
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={g.v}
+                    checked={gender === g.v}
+                    onChange={() => setGender(g.v as "male" | "female")}
+                    className="h-4 w-4 border-paper-300 text-ink-500 focus:ring-ink-500"
+                  />
+                  {g.l}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <Field
+            label="তোমার কলেজের নাম লিখে সিলেক্ট করো"
+            icon={<School className="h-4 w-4" />}
+          >
+            <input
+              type="text"
+              placeholder="নাম লিখে সিলেক্ট করবে"
+              value={college}
+              onChange={(e) => setCollege(e.target.value)}
               className="w-full bg-transparent py-3 text-sm text-body placeholder:text-body-muted focus:outline-none"
               required
             />
           </Field>
 
           <Field
-            label="মোবাইল নাম্বার"
+            label="তোমার HSC Batch সিলেক্ট করো"
+            icon={<GraduationCap className="h-4 w-4" />}
+          >
+            <select
+              value={hscBatch}
+              onChange={(e) => setHscBatch(e.target.value)}
+              className="w-full bg-transparent py-3 text-sm text-body focus:outline-none"
+            >
+              <option value="">Select Batch</option>
+              {HSC_BATCHES.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field
+            label={
+              <>
+                তোমার SSC Batch সিলেক্ট করো{" "}
+                <span className="text-rose-500">*</span>
+              </>
+            }
+            icon={<CalendarDays className="h-4 w-4" />}
+          >
+            <select
+              value={sscBatch}
+              onChange={(e) => setSscBatch(e.target.value)}
+              className="w-full bg-transparent py-3 text-sm text-body focus:outline-none"
+              required
+            >
+              <option value="">Select SSC Batch</option>
+              {SSC_BATCHES.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field
+            label="তোমার মোবাইল নাম্বার"
             icon={<Phone className="h-4 w-4" />}
             prefix="+৮৮০"
           >
@@ -125,14 +226,16 @@ export default function SignupPage() {
               autoComplete="tel"
               placeholder="01XXXXXXXXX"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
+              maxLength={11}
+              pattern="01[3-9][0-9]{8}"
               className="w-full bg-transparent py-3 text-sm text-body placeholder:text-body-muted focus:outline-none"
               required
             />
           </Field>
 
           <Field
-            label="পাসওয়ার্ড"
+            label="পাসওয়ার্ড দাও (মনে রাখবে, পরে লগইন করতে লাগবে)"
             icon={<Lock className="h-4 w-4" />}
             right={
               <button
@@ -184,21 +287,21 @@ export default function SignupPage() {
           )}
 
           <Field
-            label="পাসওয়ার্ড নিশ্চিত করুন"
-            icon={<Lock className="h-4 w-4" />}
+            label="অভিভাবক ফোন নাম্বার"
+            icon={<UsersIcon className="h-4 w-4" />}
+            prefix="+৮৮০"
           >
             <input
-              type={show ? "text" : "password"}
-              autoComplete="new-password"
-              placeholder="••••••••"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
+              type="tel"
+              inputMode="numeric"
+              placeholder="01XXXXXXXXX"
+              value={guardianPhone}
+              onChange={(e) => setGuardianPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
+              maxLength={11}
+              pattern="01[3-9][0-9]{8}"
               className="w-full bg-transparent py-3 text-sm text-body placeholder:text-body-muted focus:outline-none"
               required
             />
-            {confirm && password === confirm && (
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            )}
           </Field>
 
           <label className="flex cursor-pointer items-start gap-2 text-sm text-body-soft">
@@ -236,9 +339,9 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="btn-gold w-full !py-3.5 disabled:cursor-not-allowed disabled:opacity-70"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-ink-900 px-4 py-3.5 text-sm font-extrabold text-white shadow-card transition hover:bg-ink-800 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {loading ? "অ্যাকাউন্ট খোলা হচ্ছে..." : "অ্যাকাউন্ট তৈরি করুন"}
+            {loading ? "অ্যাকাউন্ট খোলা হচ্ছে..." : "সাইন আপ করুন"}
             {!loading && <ArrowRight className="h-4 w-4" />}
           </button>
 
@@ -259,7 +362,7 @@ function Field({
   right,
   children,
 }: {
-  label: string;
+  label: React.ReactNode;
   icon: React.ReactNode;
   prefix?: string;
   right?: React.ReactNode;
@@ -270,7 +373,7 @@ function Field({
       <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-body-soft">
         {label}
       </span>
-      <div className="flex items-center gap-2 rounded-xl border border-paper-300 bg-white px-3.5 transition focus-within:border-ink-500/50 focus-within:ring-2 focus-within:ring-ink-500/10">
+      <div className="flex items-center gap-2 rounded-lg border border-paper-300 bg-white px-3.5 transition focus-within:border-ink-500/50 focus-within:ring-2 focus-within:ring-ink-500/10">
         <span className="text-body-muted">{icon}</span>
         {prefix && (
           <>
