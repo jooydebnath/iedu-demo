@@ -1,20 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/signup"];
+const AUTH_PATHS = ["/login", "/signup"];
+const PRIVATE_PATHS = ["/checkout", "/profile"];
 
 /**
- * Auth gate: any visitor without `iedu_auth` cookie is redirected to /login
- * except when already on a public auth page.
+ * Auth gate: only PRIVATE_PATHS require authentication.
+ * Authed users visiting login/signup are redirected home.
  */
 export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
-  const isPublic = PUBLIC_PATHS.some(
+  const isAuthPage = AUTH_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`)
+  );
+  const isPrivate = PRIVATE_PATHS.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`)
   );
   const isAuthed = req.cookies.get("iedu_auth")?.value === "1";
 
   // If already authed and visiting login/signup → send home
-  if (isAuthed && isPublic) {
+  if (isAuthed && isAuthPage) {
     const url = req.nextUrl.clone();
     url.pathname = "/";
     url.search = "";
@@ -22,7 +26,7 @@ export function middleware(req: NextRequest) {
   }
 
   // Not authed and trying to access a private route → send to /login
-  if (!isAuthed && !isPublic) {
+  if (!isAuthed && isPrivate) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("from", pathname + search);
