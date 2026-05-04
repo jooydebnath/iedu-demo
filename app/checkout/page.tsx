@@ -15,6 +15,7 @@ import {
   Minus,
   Trash2,
   ShoppingCart,
+  Info,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -40,8 +41,8 @@ const DISTRICTS = [
 ];
 
 const PAYMENT_METHODS = [
-  { id: "bkash", label: "Bkash", color: "bg-rose-500" },
-  { id: "surjopay", label: "SurjoPay", color: "bg-purple-500" },
+  { id: "bkash", label: "bKash", color: "bg-rose-500", description: null as string | null },
+  { id: "surjopay", label: "SurjoPay", color: "bg-purple-500", description: "এখানে bKash, Nagad, Bank Card ইত্যাদি সব পেমেন্ট গ্রহন করা হয়" },
 ];
 
 export default function CheckoutPage() {
@@ -61,7 +62,8 @@ export default function CheckoutPage() {
     note: "",
   });
 
-  const shipping = DELIVERY_OPTIONS.find((d) => d.id === delivery)?.fee ?? 0;
+  const hasPhysical = items.some((item) => item.type !== "digital");
+  const shipping = hasPhysical ? (DELIVERY_OPTIONS.find((d) => d.id === delivery)?.fee ?? 0) : 0;
   const total = subtotal + shipping;
 
   const onSubmit = (e: React.FormEvent) => {
@@ -70,7 +72,7 @@ export default function CheckoutPage() {
       toast.error("কার্ট খালি!");
       return;
     }
-    if (!form.name || !form.district || !form.address || !form.phone) {
+    if (hasPhysical && (!form.name || !form.district || !form.address || !form.phone)) {
       toast.error("সব প্রয়োজনীয় তথ্য পূরণ করুন");
       return;
     }
@@ -175,12 +177,12 @@ export default function CheckoutPage() {
 
                 <div className="mt-4 space-y-2 border-t border-paper-300 pt-3 text-sm">
                   <Row
-                    label="Shipping Charge"
+                    label={hasPhysical ? "Shipping Charge" : "Delivery"}
                     value={
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-extrabold text-ink-900 ${shipping === 0 ? "bg-gold-500" : "bg-amber-400"}`}
+                        className={`rounded-full px-3 py-1 text-xs font-extrabold ${shipping === 0 ? "bg-gold-500 text-ink-900" : "bg-amber-400 text-ink-900"}`}
                       >
-                        Tk. {toBn(shipping)}
+                        {hasPhysical ? `Tk. ${toBn(shipping)}` : "Free"}
                       </span>
                     }
                   />
@@ -214,128 +216,136 @@ export default function CheckoutPage() {
                 </div>
               </Card>
 
-              {/* Delivery Method */}
-              <Card title="Delivery Method" icon={<Truck className="h-4 w-4" />}>
-                <div className="space-y-2">
-                  {DELIVERY_OPTIONS.map((d) => (
-                    <label
-                      key={d.id}
-                      className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 text-sm transition ${
-                        delivery === d.id
-                          ? "border-ink-500 bg-ink-50"
-                          : "border-paper-300 bg-white hover:border-paper-300/80"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="delivery"
-                        value={d.id}
-                        checked={delivery === d.id}
-                        onChange={() => setDelivery(d.id)}
-                        className="h-4 w-4 text-ink-500 focus:ring-ink-500"
-                      />
-                      <span className="font-semibold text-body">{d.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </Card>
+              {hasPhysical && (
+                <>
+                  {/* Delivery Method */}
+                  <Card title="Delivery Method" icon={<Truck className="h-4 w-4" />}>
+                    <div className="space-y-2">
+                      {DELIVERY_OPTIONS.map((d) => (
+                        <label
+                          key={d.id}
+                          className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 text-sm transition ${
+                            delivery === d.id
+                              ? "border-ink-500 bg-ink-50"
+                              : "border-paper-300 bg-white hover:border-paper-300/80"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="delivery"
+                            value={d.id}
+                            checked={delivery === d.id}
+                            onChange={() => setDelivery(d.id)}
+                            className="h-4 w-4 text-ink-500 focus:ring-ink-500"
+                          />
+                          <span className="font-semibold text-body">{d.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </Card>
+                </>
+              )}
             </div>
 
             {/* RIGHT column */}
             <div className="space-y-6">
-              {/* Delivery Address */}
-              <Card title="Delivery Address" icon={<MapPin className="h-4 w-4" />}>
-                <div className="space-y-3">
-                  <Field label="আপনার নাম" required>
-                    <input
-                      type="text"
-                      value={form.name}
-                      onChange={(e) =>
-                        setForm({ ...form, name: e.target.value })
-                      }
-                      placeholder="Enter your full name"
-                      className="input"
-                      required
-                    />
-                  </Field>
+              {hasPhysical && (
+                <>
+                  {/* Delivery Address */}
+                  <Card title="Delivery Address" icon={<MapPin className="h-4 w-4" />}>
+                    <div className="space-y-3">
+                      <Field label="আপনার নাম" required>
+                        <input
+                          type="text"
+                          value={form.name}
+                          onChange={(e) =>
+                            setForm({ ...form, name: e.target.value })
+                          }
+                          placeholder="Enter your full name"
+                          className="input"
+                          required
+                        />
+                      </Field>
 
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <Field label="জেলা" required>
-                      <select
-                        value={form.district}
-                        onChange={(e) =>
-                          setForm({ ...form, district: e.target.value })
-                        }
-                        className="input"
-                        required
-                      >
-                        <option value="">জেলা নির্বাচন করুন</option>
-                        {DISTRICTS.map((d) => (
-                          <option key={d} value={d}>
-                            {d}
-                          </option>
-                        ))}
-                      </select>
-                    </Field>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <Field label="জেলা" required>
+                          <select
+                            value={form.district}
+                            onChange={(e) =>
+                              setForm({ ...form, district: e.target.value })
+                            }
+                            className="input"
+                            required
+                          >
+                            <option value="">জেলা নির্বাচন করুন</option>
+                            {DISTRICTS.map((d) => (
+                              <option key={d} value={d}>
+                                {d}
+                              </option>
+                            ))}
+                          </select>
+                        </Field>
 
-                    <Field label="উপজেলা" required>
-                      <select
-                        value={form.upazila}
-                        onChange={(e) =>
-                          setForm({ ...form, upazila: e.target.value })
-                        }
-                        className="input"
-                        required
-                      >
-                        <option value="">প্রথমে জেলা নির্বাচন করুন</option>
-                      </select>
-                    </Field>
-                  </div>
+                        <Field label="উপজেলা" required>
+                          <select
+                            value={form.upazila}
+                            onChange={(e) =>
+                              setForm({ ...form, upazila: e.target.value })
+                            }
+                            className="input"
+                            required
+                          >
+                            <option value="">প্রথমে জেলা নির্বাচন করুন</option>
+                          </select>
+                        </Field>
+                      </div>
 
-                  <Field label="বাসার ঠিকানা (বিস্তারিত)" required>
-                    <textarea
-                      rows={3}
-                      value={form.address}
-                      onChange={(e) =>
-                        setForm({ ...form, address: e.target.value })
-                      }
-                      placeholder="Enter your detailed address"
-                      className="input resize-none"
-                      required
-                    />
-                  </Field>
+                      <Field label="বাসার ঠিকানা (বিস্তারিত)" required>
+                        <textarea
+                          rows={3}
+                          value={form.address}
+                          onChange={(e) =>
+                            setForm({ ...form, address: e.target.value })
+                          }
+                          placeholder="Enter your detailed address"
+                          className="input resize-none"
+                          required
+                        />
+                      </Field>
 
-                  <Field label="মোবাইল নাম্বার" required>
-                    <input
-                      type="tel"
-                      inputMode="numeric"
-                      value={form.phone}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          phone: e.target.value.replace(/\D/g, "").slice(0, 11),
-                        })
-                      }
-                      maxLength={11}
-                      placeholder="Enter your mobile number"
-                      className="input"
-                      required
-                    />
-                  </Field>
+                      <Field label="মোবাইল নাম্বার" required>
+                        <input
+                          type="tel"
+                          inputMode="numeric"
+                          value={form.phone}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              phone: e.target.value.replace(/\D/g, "").slice(0, 11),
+                            })
+                          }
+                          maxLength={11}
+                          placeholder="Enter your mobile number"
+                          className="input"
+                          required
+                        />
+                      </Field>
 
-                  <Field label="বিশেষ নোট">
-                    <textarea
-                      rows={2}
-                      value={form.note}
-                      onChange={(e) =>
-                        setForm({ ...form, note: e.target.value })
-                      }
-                      placeholder="Any special instructions (optional)"
-                      className="input resize-none"
-                    />
-                  </Field>
-                </div>
-              </Card>
+                      <Field label="বিশেষ নোট">
+                        <textarea
+                          rows={2}
+                          value={form.note}
+                          onChange={(e) =>
+                            setForm({ ...form, note: e.target.value })
+                          }
+                          placeholder="Any special instructions (optional)"
+                          className="input resize-none"
+                        />
+                      </Field>
+                    </div>
+                  </Card>
+                </>
+              )}
 
               {/* Payment */}
               <Card
@@ -368,6 +378,14 @@ export default function CheckoutPage() {
                       >
                         {m.label}
                       </span>
+                      {m.description && (
+                        <span className="group relative ml-auto">
+                          <Info className="h-4 w-4 text-ink-400 transition hover:text-ink-600" />
+                          <span className="pointer-events-none absolute -left-32 bottom-full mb-2 w-64 rounded-xl border border-paper-300 bg-white p-3 text-xs font-medium text-body shadow-card opacity-0 transition group-hover:opacity-100">
+                            {m.description}
+                          </span>
+                        </span>
+                      )}
                     </label>
                   ))}
                 </div>

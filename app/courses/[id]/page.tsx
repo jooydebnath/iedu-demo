@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -33,6 +33,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { cn, toBn } from "@/lib/utils";
+import { useCart } from "@/lib/cart";
 
 /* ─── Course data (same as homepage) ─── */
 type Course = {
@@ -434,8 +435,23 @@ const INSTRUCTORS: Record<string, { name: string; title: string; bio: string; in
 /* ─── Page Component ─── */
 export default function CourseDetailsPage() {
   const params = useParams();
+  const router = useRouter();
+  const { add } = useCart();
   const courseId = params.id as string;
   const course = COURSES.find((c) => c.id === courseId);
+
+  const addToCart = (c: Course) => {
+    add({
+      id: c.id,
+      title: `${c.title} — ${c.subtitle}`,
+      price: c.price,
+      oldPrice: c.oldPrice,
+      cover: c.badgeColor,
+      emoji: "🎓",
+      type: "digital",
+    });
+    router.push("/checkout");
+  };
 
   if (!course) {
     return (
@@ -587,7 +603,7 @@ export default function CourseDetailsPage() {
           {/* Right column: sticky card (mobile hidden, shows at top on mobile) */}
           <div className="hidden lg:block">
             <div className="sticky top-28">
-              <EnrollCardLight course={course} />
+              <EnrollCardLight course={course} onEnroll={() => addToCart(course)} />
             </div>
           </div>
         </div>
@@ -608,7 +624,7 @@ export default function CourseDetailsPage() {
               )}
             </div>
           </div>
-          <button className="btn-gold !py-2.5 !px-6 text-sm">
+          <button onClick={() => addToCart(course)} className="btn-gold !py-2.5 !px-6 text-sm">
             এখনই ভর্তি হও <ArrowRight className="h-4 w-4" />
           </button>
         </div>
@@ -737,7 +753,7 @@ function VideoPreviewCard({ course: c }: { course: Course }) {
   );
 }
 
-function EnrollCardCompact({ course: c }: { course: Course }) {
+function EnrollCardCompact({ course: c, onEnroll }: { course: Course; onEnroll?: () => void }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur-md">
       <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gold-500/15 blur-2xl" />
@@ -761,7 +777,7 @@ function EnrollCardCompact({ course: c }: { course: Course }) {
       )}
 
       {/* CTA */}
-      <button className="btn-gold mt-4 w-full !py-2.5 text-sm">
+      <button onClick={onEnroll} className="btn-gold mt-4 w-full !py-2.5 text-sm">
         এখনই ভর্তি হও <ArrowRight className="h-4 w-4" />
       </button>
 
@@ -790,7 +806,7 @@ function EnrollCardCompact({ course: c }: { course: Course }) {
   );
 }
 
-function EnrollCardLight({ course: c }: { course: Course }) {
+function EnrollCardLight({ course: c, onEnroll }: { course: Course; onEnroll?: () => void }) {
   return (
     <div className="overflow-hidden rounded-3xl border border-paper-300 bg-white p-6 shadow-card">
       {/* Price */}
@@ -812,7 +828,7 @@ function EnrollCardLight({ course: c }: { course: Course }) {
       )}
 
       {/* CTA */}
-      <button className="btn-gold mt-5 w-full !py-3 text-sm">
+      <button onClick={onEnroll} className="btn-gold mt-5 w-full !py-3 text-sm">
         এখনই ভর্তি হও <ArrowRight className="h-4 w-4" />
       </button>
 

@@ -4,7 +4,20 @@
 const COOKIE = "iedu_auth";
 const STORAGE = "iedu_user";
 
-export function login(user: { name?: string; phone?: string } = {}) {
+export type UserRole = "student" | "teacher" | "admin";
+
+export type User = {
+  name?: string;
+  phone?: string;
+  gender?: string;
+  college?: string;
+  hscBatch?: string;
+  sscBatch?: string;
+  guardianPhone?: string;
+  role?: UserRole;
+};
+
+export function login(user: User = {}) {
   // 7-day cookie
   const days = 7;
   const expires = new Date(Date.now() + days * 86400 * 1000).toUTCString();
@@ -28,12 +41,17 @@ export function isAuthed() {
     .some((c) => c.startsWith(`${COOKIE}=1`));
 }
 
-export function getUser(): { name?: string; phone?: string } | null {
+export function getUser(): User | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(STORAGE);
-    return raw ? JSON.parse(raw) : null;
+    return raw ? (JSON.parse(raw) as User) : null;
   } catch {
     return null;
   }
+}
+
+export function isStudent(): boolean {
+  const user = getUser();
+  return user?.role === "student";
 }

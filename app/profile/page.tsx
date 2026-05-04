@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   User,
   Phone,
-  Mail,
-  MapPin,
-  Calendar,
   PencilLine,
   LogOut,
   Award,
@@ -25,10 +23,14 @@ import {
   Sparkles,
   ArrowRight,
   Camera,
+  ShieldCheck,
+  School,
+  Users,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { cn, toBn } from "@/lib/utils";
+import { getUser, logout, isStudent, type User as AuthUser } from "@/lib/auth";
 
 const TABS = [
   { id: "overview", label: "ওভারভিউ", icon: TrendingUp },
@@ -96,7 +98,30 @@ const ORDERS = [
 ];
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("overview");
+
+  useEffect(() => {
+    const u = getUser();
+    if (!u || !isStudent()) {
+      router.replace("/login?from=/profile");
+      return;
+    }
+    setUser(u);
+  }, [router]);
+
+  if (!user) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-paper-100">
+        <div className="animate-pulse text-body-muted">লোড হচ্ছে...</div>
+      </main>
+    );
+  }
+
+  const initial = user.name ? user.name.charAt(0).toUpperCase() : "?";
+  const genderLabel =
+    user.gender === "male" ? "ছাত্র" : user.gender === "female" ? "ছাত্রী" : "শিক্ষার্থী";
 
   return (
     <main className="relative min-h-screen bg-paper-100 text-body">
@@ -122,11 +147,11 @@ export default function ProfilePage() {
 
         <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-16 lg:px-8 lg:pb-32 lg:pt-20">
           <span className="pill-gold !bg-white/15 !text-gold-300 !ring-white/20 w-fit">
-            <Sparkles className="h-3.5 w-3.5" />
-            VIP মেম্বার
+            <ShieldCheck className="h-3.5 w-3.5" />
+            স্টুডেন্ট মেম্বার
           </span>
           <h1 className="mt-4 font-display text-4xl font-extrabold text-white sm:text-5xl">
-            স্বাগতম, <span className="text-gold-400">তাসনিম</span>!
+            স্বাগতম, <span className="text-gold-400">{user.name || "শিক্ষার্থী"}</span>!
           </h1>
           <p className="mt-2 max-w-md text-white/70">
             তোমার লার্নিং জার্নি দেখো, কোর্স কন্টিনিউ করো ও নতুন অর্জন আনলক করো।
@@ -140,10 +165,10 @@ export default function ProfilePage() {
           <div className="grid gap-6 lg:grid-cols-[auto_1fr_auto] lg:items-center">
             {/* Avatar */}
             <div className="relative mx-auto h-28 w-28 lg:mx-0">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 blur-md opacity-60" />
-              <div className="relative grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-pink-500 to-rose-600 ring-4 ring-white shadow-card">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gold-400 to-amber-500 blur-md opacity-60" />
+              <div className="relative grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-gold-400 to-amber-500 ring-4 ring-white shadow-card">
                 <span className="font-display text-3xl font-extrabold text-white">
-                  তা
+                  {initial}
                 </span>
               </div>
               <button
@@ -157,16 +182,18 @@ export default function ProfilePage() {
             {/* Info */}
             <div className="text-center lg:text-left">
               <h2 className="font-display text-2xl font-extrabold text-body sm:text-3xl">
-                তাসনিম রহমান
+                {user.name || "শিক্ষার্থী"}
               </h2>
               <p className="mt-1 text-sm text-body-soft">
-                Medical Aspirant • রাজশাহী
+                {genderLabel}
+                {user.college ? ` • ${user.college}` : ""}
+                {user.hscBatch ? ` • ${user.hscBatch}` : ""}
               </p>
               <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-xs lg:justify-start">
-                <Info icon={Phone} value="+৮৮০ ১৭১২-৩৪৫৬৭৮" />
-                <Info icon={Mail} value="tasnim@example.com" />
-                <Info icon={MapPin} value="রাজশাহী" />
-                <Info icon={Calendar} value="যোগদান: জানুয়ারি ২০২৬" />
+                {user.phone && <Info icon={Phone} value={`+৮৮০ ${user.phone}`} />}
+                {user.guardianPhone && <Info icon={Users} value={`গার্ডিয়ান: +৮৮০ ${user.guardianPhone}`} />}
+                {user.sscBatch && <Info icon={School} value={`SSC: ${user.sscBatch}`} />}
+                {user.hscBatch && <Info icon={GraduationCap} value={`HSC: ${user.hscBatch}`} />}
               </div>
             </div>
 
@@ -175,12 +202,15 @@ export default function ProfilePage() {
               <button className="inline-flex items-center gap-1.5 rounded-full border border-paper-300 bg-white px-4 py-2 text-sm font-semibold text-body transition hover:border-ink-500/40">
                 <PencilLine className="h-4 w-4" /> এডিট
               </button>
-              <Link
-                href="/login"
+              <button
+                onClick={() => {
+                  logout();
+                  window.location.href = "/";
+                }}
                 className="inline-flex items-center gap-1.5 rounded-full bg-rose-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-rose-600"
               >
                 <LogOut className="h-4 w-4" /> লগআউট
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -188,25 +218,25 @@ export default function ProfilePage() {
           <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Stat
               icon={BookOpen}
-              value={toBn(8)}
+              value={toBn(0)}
               label="এনরোলড কোর্স"
               accent="from-blue-500 to-indigo-600"
             />
             <Stat
               icon={CheckCircle2}
-              value={toBn(3)}
+              value={toBn(0)}
               label="কমপ্লিটেড"
               accent="from-emerald-500 to-teal-600"
             />
             <Stat
               icon={Award}
-              value={toBn(5)}
+              value={toBn(0)}
               label="সার্টিফিকেট"
               accent="from-amber-500 to-orange-600"
             />
             <Stat
               icon={Clock}
-              value={`${toBn(248)} ঘন্টা`}
+              value={`${toBn(0)} ঘন্টা`}
               label="স্টাডি টাইম"
               accent="from-fuchsia-500 to-purple-600"
             />
@@ -246,7 +276,7 @@ export default function ProfilePage() {
           {tab === "courses" && <CoursesTab />}
           {tab === "orders" && <OrdersTab />}
           {tab === "wishlist" && <EmptyState icon={Heart} title="উইশলিস্ট খালি" desc="পছন্দের কোর্স ও বই সংরক্ষণ করো এক ক্লিকে।" />}
-          {tab === "settings" && <SettingsTab />}
+          {tab === "settings" && <SettingsTab user={user} />}
         </div>
       </section>
 
@@ -495,7 +525,7 @@ function OrdersTab() {
   );
 }
 
-function SettingsTab() {
+function SettingsTab({ user }: { user: AuthUser }) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="rounded-3xl border border-paper-300 bg-white p-6 shadow-card">
@@ -503,10 +533,12 @@ function SettingsTab() {
           <User className="mr-1 inline h-5 w-5 text-ink-500" /> পার্সোনাল ইনফো
         </h4>
         <div className="mt-5 space-y-4">
-          <SettingsField label="পূর্ণ নাম" defaultValue="তাসনিম রহমান" />
-          <SettingsField label="মোবাইল" defaultValue="01712-345678" />
-          <SettingsField label="ইমেইল" defaultValue="tasnim@example.com" />
-          <SettingsField label="ঠিকানা" defaultValue="রাজশাহী" />
+          <SettingsField label="পূর্ণ নাম" defaultValue={user.name || ""} />
+          <SettingsField label="মোবাইল" defaultValue={user.phone || ""} />
+          <SettingsField label="কলেজ/স্কুল" defaultValue={user.college || ""} />
+          <SettingsField label="HSC ব্যাচ" defaultValue={user.hscBatch || ""} />
+          <SettingsField label="SSC ব্যাচ" defaultValue={user.sscBatch || ""} />
+          <SettingsField label="অভিভাবকের নম্বর" defaultValue={user.guardianPhone || ""} />
           <button className="btn-gold w-full !py-3">পরিবর্তন সংরক্ষণ করুন</button>
         </div>
       </div>

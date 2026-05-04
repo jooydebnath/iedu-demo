@@ -2,9 +2,9 @@
 
 import {
   GraduationCap,
-  Facebook,
-  Youtube,
-  Instagram,
+  Link,
+  Play,
+  Camera,
   Send,
   Mail,
   Phone,
@@ -66,9 +66,9 @@ export default function Footer() {
 
             <div className="mt-6 flex items-center gap-2">
               {[
-                { Icon: Facebook, href: "#" },
-                { Icon: Youtube, href: "#" },
-                { Icon: Instagram, href: "#" },
+                { Icon: Link, href: "#" },
+                { Icon: Play, href: "#" },
+                { Icon: Camera, href: "#" },
                 { Icon: Send, href: "#" },
               ].map(({ Icon, href }, i) => (
                 <a

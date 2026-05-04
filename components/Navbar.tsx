@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, LogIn, ChevronDown, Wallet, ShoppingCart } from "lucide-react";
+import { Menu, X, LogIn, ChevronDown, Wallet, ShoppingCart, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/cart";
 import { toBn } from "@/lib/utils";
+import { isAuthed, isStudent } from "@/lib/auth";
 
 const NAV_LINKS = [
   { label: "হোম", href: "/" },
@@ -23,6 +24,8 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [authed, setAuthed] = useState(false);
+  const [student, setStudent] = useState(false);
   const { count } = useCart();
 
   useEffect(() => {
@@ -30,6 +33,16 @@ export default function Navbar() {
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const check = () => {
+      setAuthed(isAuthed());
+      setStudent(isStudent());
+    };
+    check();
+    const iv = setInterval(check, 1000);
+    return () => clearInterval(iv);
   }, []);
 
   return (
@@ -108,13 +121,23 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink-500"
-              style={{ borderRadius: 8 }}
-            >
-              <LogIn className="h-4 w-4" /> লগইন
-            </Link>
+            {authed && student ? (
+              <Link
+                href="/profile"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink-500"
+                style={{ borderRadius: 8 }}
+              >
+                <User className="h-4 w-4" /> প্রোফাইল
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink-500"
+                style={{ borderRadius: 8 }}
+              >
+                <LogIn className="h-4 w-4" /> লগইন
+              </Link>
+            )}
             <button
               onClick={() => setOpen((v) => !v)}
               className="grid h-10 w-10 place-items-center border border-paper-300 bg-white text-body lg:hidden"
@@ -147,14 +170,25 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="mt-3 flex gap-2">
-                <Link
-                  href="/login"
-                  onClick={() => setOpen(false)}
-                  className="flex flex-1 items-center justify-center gap-1.5 bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white"
-                  style={{ borderRadius: 8 }}
-                >
-                  <LogIn className="h-4 w-4" /> লগইন
-                </Link>
+                {authed && student ? (
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className="flex flex-1 items-center justify-center gap-1.5 bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white"
+                    style={{ borderRadius: 8 }}
+                  >
+                    <User className="h-4 w-4" /> প্রোফাইল
+                  </Link>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="flex flex-1 items-center justify-center gap-1.5 bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white"
+                    style={{ borderRadius: 8 }}
+                  >
+                    <LogIn className="h-4 w-4" /> লগইন
+                  </Link>
+                )}
               </div>
             </nav>
           </div>

@@ -261,6 +261,7 @@ export default function BookDetailPage() {
         cover: book.cover,
         emoji: book.emoji,
         author: book.author,
+        type: "physical",
       },
       qty
     );

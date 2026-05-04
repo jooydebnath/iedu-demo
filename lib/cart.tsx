@@ -18,6 +18,7 @@ export type CartItem = {
   cover?: string;
   emoji?: string;
   author?: string;
+  type?: "physical" | "digital";
 };
 
 type CartContextValue = {

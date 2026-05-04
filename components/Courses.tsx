@@ -275,8 +275,13 @@ export default function Courses() {
 
         {/* CTA */}
         <div className="mt-14 flex justify-center">
-          <a href="#all-courses" className="btn-gold">
-            সব কোর্স দেখুন <ArrowRight className="h-4 w-4" />
+          <a
+            href="#all-courses"
+            className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-gradient-to-r from-gold-500 via-amber-400 to-gold-500 px-8 py-4 text-base font-extrabold text-ink-900 shadow-glow transition-all duration-300 hover:scale-105 hover:shadow-glow-lg hover:shadow-gold-500/30 active:scale-95"
+          >
+            <span className="relative z-10">সব কোর্স দেখুন</span>
+            <ArrowRight className="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
           </a>
         </div>
       </div>
